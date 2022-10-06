@@ -4,9 +4,12 @@ import sqlite3
 conn = sqlite3.connect("test.sqlite")
 
 #Clear all data
-conn.execute("""DROP TABLE files;""")
-conn.execute("""DROP TABLE users;""")
-
+try:
+	conn.execute("""DROP TABLE files;""")
+except: pass
+try:
+	conn.execute("""DROP TABLE users;""")
+except: pass
 # Create table Files
 conn.execute("""CREATE TABLE FILES(
 FileID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
