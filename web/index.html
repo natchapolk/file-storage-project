@@ -1,0 +1,61 @@
+<html>
+<head>
+<title>User Login</title>
+</head>
+<body>
+<h1>Login</h1>
+<div>
+<label for="username">username: </label>
+</div>
+<div>
+<input type="text" id="username" />
+</div>
+<div>
+<label for="password">Password: </label>
+</div>
+<div>
+<input type="password" id="password" />
+</div>
+<div>
+<button onClick="handleLogin()">Login</button>
+</div>
+<script>
+con username = document.getElementById("username");
+const password = document.getELementById("password");
+function handleLogin(){
+fetch("/user/login", {
+method: "POST",
+headers: {
+"Content-Type": "application/json"
+},
+body: JSON.stringify({
+"username": username.value,
+"password": password.value
+})
+})
+.then(function(response){
+response.json().then(function(json){
+if (json.hasOwnProperty("token")) {
+window.localStorage.setItem("DES424", json["token"]);
+window.location.href = ""home.html";
+}
+})
+})
+}
+fetch("/user/me", {
+method: "GET",
+headers: {
+"Content-Type": "application/json"
+}
+})
+.then(function(response){
+if (response.status == 403"){
+window.localStorage.removeItem("DES424");
+}
+response.json().then(function(json){
+window.location.href = "home.html";
+})
+})
+</script>
+</body>
+</html>
