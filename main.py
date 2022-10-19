@@ -76,4 +76,8 @@ async def post_file(files: UploadFile = File(...), token: str = Depends(JWTBeare
 	insert("files", "NAME, TYPE, PATH, UserID", "'"+files.filename+"', '"+files.content_type+"', '"+path+"', "+str(user_id))
 	return {"result": "file uploaded"}
 
+@app.get("/user/me", dependencies=[Depends(JWTBearer())])
+def get_user(token: str = Depends(JWTBearer())):
+	username = decodeJWT(token)['username']
+	return {"username": username}
 app.mount("/", StaticFiles(directory="web"), name="web")
