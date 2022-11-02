@@ -76,6 +76,19 @@ async def post_file(files: UploadFile = File(...), token: str = Depends(JWTBeare
 	insert("files", "NAME, TYPE, PATH, UserID", "'"+files.filename+"', '"+files.content_type+"', '"+path+"', "+str(user_id))
 	return {"result": "file uploaded"}
 
+@app.get("/file", dependencies=[Depends(JWTBearer())])
+def get_files(token: str = Depends(JWTBearer())):
+	return select("FileID, name", "files", "userID = "+str(decodeJWT(token)['user_id']))
+
+@app.get("/file/{id}", dependencies=[Depends(JWTBearer())])
+def download_file(id: int, token: str = Depends(JWTBearer())):
+	data = select("name, path", "files", "UserID="+str(decodeJWT(token)['user_id'])+" and FileID = "+str(id))
+	print(data)
+	f = open(data[0][1], "r", encoding="utf8", errors="ignore")
+	fileData = f.read()
+	f.close()
+	return {"name": data[0][0], "data": fileData}
+
 @app.get("/user/me", dependencies=[Depends(JWTBearer())])
 def get_user(token: str = Depends(JWTBearer())):
 	username = decodeJWT(token)['username']
