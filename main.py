@@ -88,6 +88,11 @@ def download_file(id: int):
 	data = select("path, name, type, userID", "files", "FileID = "+str(id))
 	return FileResponse(path=data[0][0], filename=data[0][1], media_type=data[0][2])
 
+@app.delete("/file/{id}", dependencies=[Depends(JWTBearer())])
+def delete_file(id: int, token: str = Depends(JWTBearer())):
+	user_id = decodeJWT(token)['user_id']
+	delete("files", "userID="+str(user_id)+" and fileID="+str(id))
+	return {"result": "File deleted"}
 
 @app.get("/user/me", dependencies=[Depends(JWTBearer())])
 def get_user(token: str = Depends(JWTBearer())):
