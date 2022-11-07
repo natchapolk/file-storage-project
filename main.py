@@ -2,6 +2,8 @@ from fastapi import Response, Request, FastAPI, Depends, HTTPException, File, Up
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from starlette.responses import FileResponse
+#from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Dict, List, Optional
 from db import select, insert, update, delete
@@ -78,16 +80,14 @@ async def post_file(files: UploadFile = File(...), token: str = Depends(JWTBeare
 
 @app.get("/file", dependencies=[Depends(JWTBearer())])
 def get_files(token: str = Depends(JWTBearer())):
-	return select("FileID, name", "files", "userID = "+str(decodeJWT(token)['user_id']))
+	data = select("FileID, name", "files", "userID = "+str(decodeJWT(token)['user_id']))
+	return data
 
-@app.get("/file/{id}", dependencies=[Depends(JWTBearer())])
-def download_file(id: int, token: str = Depends(JWTBearer())):
-	data = select("name, path", "files", "UserID="+str(decodeJWT(token)['user_id'])+" and FileID = "+str(id))
-	print(data)
-	f = open(data[0][1], "r", encoding="utf8", errors="ignore")
-	fileData = f.read()
-	f.close()
-	return {"name": data[0][0], "data": fileData}
+@app.get("/file/{id}")
+def download_file(id: int):
+	data = select("path, name, type, userID", "files", "FileID = "+str(id))
+	return FileResponse(path=data[0][0], filename=data[0][1], media_type=data[0][2])
+
 
 @app.get("/user/me", dependencies=[Depends(JWTBearer())])
 def get_user(token: str = Depends(JWTBearer())):
