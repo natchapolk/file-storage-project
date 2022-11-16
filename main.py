@@ -1,5 +1,6 @@
 from fastapi import Response, Request, FastAPI, Depends, HTTPException, File, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.responses import FileResponse
@@ -97,6 +98,12 @@ def delete_file(id: int, token: str = Depends(JWTBearer())):
 def get_user(token: str = Depends(JWTBearer()))	:
 	username = decodeJWT(token)['username']
 	return {"username": username}
+
+@app.get("/")
+def root():
+	response = RedirectResponse(url='/index.html')
+	return response
+
 app.mount("/", StaticFiles(directory="web"), name="web")
 if __name__ == "__main__":
     uvicorn.run('main:app', host="0.0.0.0", port=8000, log_level="info")
