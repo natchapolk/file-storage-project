@@ -1,0 +1,7 @@
+apt install -y python3 python3-pip
+git clone https://github.com/natchapolk/file-storage-project.git
+cd file-storage-project
+pip3 install -r requirements.txt
+python3 mock_table.py
+python3 mock_user.py
+python3 main.py
