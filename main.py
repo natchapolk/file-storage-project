@@ -98,3 +98,5 @@ def get_user(token: str = Depends(JWTBearer()))	:
 	username = decodeJWT(token)['username']
 	return {"username": username}
 app.mount("/", StaticFiles(directory="web"), name="web")
+if __name__ == "__main__":
+    uvicorn.run('main:app', host="0.0.0.0", port=8000, log_level="info")
