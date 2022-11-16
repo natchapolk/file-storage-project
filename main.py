@@ -3,7 +3,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from starlette.responses import FileResponse
-#from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from typing import Dict, List, Optional
 from db import select, insert, update, delete
@@ -95,7 +94,7 @@ def delete_file(id: int, token: str = Depends(JWTBearer())):
 	return {"result": "File deleted"}
 
 @app.get("/user/me", dependencies=[Depends(JWTBearer())])
-def get_user(token: str = Depends(JWTBearer())):
+def get_user(token: str = Depends(JWTBearer()))	:
 	username = decodeJWT(token)['username']
 	return {"username": username}
 app.mount("/", StaticFiles(directory="web"), name="web")

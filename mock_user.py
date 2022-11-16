@@ -15,7 +15,7 @@ for user in data:
 	user = user.split("\t")
 	print(user[0]+" "+user[1])
 	#create folder
-	try: os.mkdir("files\\"+user[0])
+	try: os.mkdir("files\"+user[0])
 	except: print("Folder exist")
 	#Add user and password to database
 	conn.execute("INSERT INTO USERS(USERNAME, PASSWORD) VALUES ('"+user[0]+"', '"+user[1]+"');")
